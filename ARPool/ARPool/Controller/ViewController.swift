@@ -88,6 +88,7 @@ extension ViewController: ARSCNViewDelegate {
         planeNode.eulerAngles.x = -.pi / 2
         
         // Adding this object as a child of the actual node
+        node.childNodes.first?.removeFromParentNode()
         node.addChildNode(planeNode)
     }
     
