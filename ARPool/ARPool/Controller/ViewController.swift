@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     var currentNode: SCNNode = SCNNode()
     var conf = true
     var configured = true
+    var teste1: SCNNode = SCNNode()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +45,8 @@ class ViewController: UIViewController {
         sceneView.addGestureRecognizer(tap)
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(ViewController.panGesture(_:)))
         sceneView.addGestureRecognizer(panGesture)
+        let a = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gestureReconizer:)))
+        sceneView.addGestureRecognizer(a)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -71,20 +74,20 @@ class ViewController: UIViewController {
     }
     
     @objc func panGesture( _ gesture: UIPanGestureRecognizer){
-        gesture.minimumNumberOfTouches = 1
-        
-        let results = self.sceneView.hitTest(gesture.location(in: gesture.view), types: ARHitTestResult.ResultType.featurePoint)
-        
-        guard let result : ARHitTestResult = results.first else {return}
-        
-        let hits = self.sceneView.hitTest(gesture.location(in: gesture.view), options: nil)
-        
-        if let tappedNode = hits.first?.node{
-            if tappedNode.geometry is SCNSphere {
-                let position = SCNVector3Make(result.worldTransform.columns.3.x, result.worldTransform.columns.3.y, result.worldTransform.columns.3.z)
-                tappedNode.position = position
-            }
-        }
+//        gesture.minimumNumberOfTouches = 1
+//        
+//        let results = self.sceneView.hitTest(gesture.location(in: gesture.view), types: ARHitTestResult.ResultType.featurePoint)
+//        
+//        guard let result : ARHitTestResult = results.first else {return}
+//        
+//        let hits = self.sceneView.hitTest(gesture.location(in: gesture.view), options: nil)
+//        
+//        if let tappedNode = hits.first?.node{
+//            if tappedNode.geometry is SCNSphere {
+//                let position = SCNVector3Make(result.worldTransform.columns.3.x, result.worldTransform.columns.3.y, result.worldTransform.columns.3.z)
+//                tappedNode.position = position
+//            }
+//        }
         
     }
     
@@ -119,8 +122,52 @@ class ViewController: UIViewController {
             configured = false
             
             createBall(node: hitTestResults2.first!.node, plane: planeNode)
-        }else{return}
+        }else{
+        
+        }
     }
+//    let a: ARFrame
+    
+    @objc func handleLongPress(gestureReconizer: UILongPressGestureRecognizer) {
+        if gestureReconizer.state != UIGestureRecognizer.State.ended {
+            if let camera = sceneView.session.currentFrame?.camera {
+                let cameraTransform = camera.transform
+//                let cameraTransform = SCNMatrix4(camera.transform)
+//                let cameraDirection = SCNVector3(-1 * cameraTransform.m31,
+//                                                 -1 * cameraTransform.m32,
+//                                                 -1 * cameraTransform.m33)
+                
+//                let powX = pow(cameraDirection.x,2)
+//                let powY = pow(cameraDirection.y,2)
+//                let powZ = pow(cameraDirection.z,2)
+//
+//
+//                let v = sqrt(powX+powY+powZ)
+//                let ux = cameraDirection.x / v
+//                let uy = cameraDirection.y / v
+//                let uz = cameraDirection.z / v
+//
+                let tapLocation = gestureReconizer.location(in: sceneView)
+                let hitTestResults2 = sceneView.hitTest(tapLocation, options: nil)
+                
+                if let sphereNode = hitTestResults2.first?.node{
+                    if let a = sphereNode.geometry as? SCNSphere {
+                        
+                        sphereNode.simdTransform = cameraTransform//position = SCNVector3(Float(ux), Float(uy), Float(uz))
+                        teste1 = sphereNode
+                        sphereNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+                    }
+                }
+            }
+        }
+        else {
+//            let tapLocation = gestureReconizer.location(in: sceneView)
+//            let hitTestResults2 = sceneView.hitTest(tapLocation, options: nil)
+//            hitTestResults2.first?.node.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+        }
+    }
+    
+    
     func createBall(node: SCNNode, plane: SCNPlane) {
         for _ in 0..<2000{
             let ball = SCNSphere(radius: 0.05)
@@ -146,6 +193,15 @@ class ViewController: UIViewController {
             ballNode.position = SCNVector3(x: Float.random(in: (node.position.x - 0.75)...(node.position.x + 0.75)), y: Float.random(in: (node.position.y + 2.5)...(node.position.y + 3.0)), z: Float.random(in: (node.position.z - 0.75)...(node.position.z + 0.75)))
             currentNode.parent?.addChildNode(ballNode)
         }
+    }
+}
+
+extension ViewController: UIGestureRecognizerDelegate {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+    }
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
     }
 }
 
@@ -186,16 +242,17 @@ extension ViewController: ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
     
-            guard let planeAnchor = anchor as? ARPlaneAnchor, let planeNode = node.childNodes.first, let plane = planeNode.geometry as? SCNPlane else { return }
+        guard let planeAnchor = anchor as? ARPlaneAnchor, let planeNode = node.childNodes.first, let plane = planeNode.geometry as? SCNPlane else { return }
+    
+        let width = CGFloat(planeAnchor.extent.x)
+        let height = CGFloat(planeAnchor.extent.z)
+        plane.width = width
+        plane.height = height
+    
+        let x = CGFloat(planeAnchor.center.x)
+        let y = CGFloat(planeAnchor.center.y)
+        let z = CGFloat(planeAnchor.center.z)
         
-            let width = CGFloat(planeAnchor.extent.x)
-            let height = CGFloat(planeAnchor.extent.z)
-            plane.width = width
-            plane.height = height
-        
-            let x = CGFloat(planeAnchor.center.x)
-            let y = CGFloat(planeAnchor.center.y)
-            let z = CGFloat(planeAnchor.center.z)
         if plane.height > 1.5 && plane.width > 1.5{
             let configuration = ARWorldTrackingConfiguration()
             sceneView.session.run(configuration)
