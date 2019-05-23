@@ -75,58 +75,74 @@ class ViewController: UIViewController {
     
     @objc func panGesture( _ gesture: UIPanGestureRecognizer){
 //        gesture.minimumNumberOfTouches = 1
-//        
+//
 //        let results = self.sceneView.hitTest(gesture.location(in: gesture.view), types: ARHitTestResult.ResultType.featurePoint)
-//        
+//
 //        guard let result : ARHitTestResult = results.first else {return}
-//        
+//
 //        let hits = self.sceneView.hitTest(gesture.location(in: gesture.view), options: nil)
-//        
+//
 //        if let tappedNode = hits.first?.node{
 //            if tappedNode.geometry is SCNSphere {
 //                let position = SCNVector3Make(result.worldTransform.columns.3.x, result.worldTransform.columns.3.y, result.worldTransform.columns.3.z)
 //                tappedNode.position = position
 //            }
 //        }
-        
+
     }
     
     @objc func addShipToSceneView(withGestureRecognizer recognizer: UIGestureRecognizer) {
         if configured{
+            
             let tapLocation = recognizer.location(in: sceneView)
             let hitTestResults2 = sceneView.hitTest(tapLocation, options: nil)
 
-            guard let planeNode = hitTestResults2.first?.node.geometry as? SCNPlane else { return }
+            if let planeNode = currentNode.geometry as? SCNPlane {
             
-            let tube = SCNTube(innerRadius: planeNode.height/2, outerRadius: planeNode.height/2 + 0.05, height: 0.6)
-            let tubeMaterial = SCNMaterial()
-            tubeMaterial.diffuse.contents = UIImage(named: "tubeWall")
-            tube.materials = [tubeMaterial]
-            let tubeNode = SCNNode(geometry: tube)
-            let shape = SCNPhysicsShape(geometry: tube, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron])
-            
-            tubeNode.physicsBody = SCNPhysicsBody(type: .static, shape: shape)
-            tubeNode.position = SCNVector3(Float((hitTestResults2.first?.node.position.x)!), Float((hitTestResults2.first?.node.position.y)!+0.05), Float((hitTestResults2.first?.node.position.z)!))
-            currentNode.parent?.addChildNode(tubeNode)
-            
-            let circle = SCNCylinder(radius: planeNode.height/2 , height: 0.0)
-            let circleMaterial = SCNMaterial()
-            circleMaterial.diffuse.contents = UIImage(named: "poolFloor")
-            circle.materials = [circleMaterial]
-            let circleNode = SCNNode(geometry: circle)
-            circleNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
-            circleNode.position = SCNVector3(Float((hitTestResults2.first?.node.position.x)!), Float((hitTestResults2.first?.node.position.y)!+0.05), Float((hitTestResults2.first?.node.position.z)!))
-            currentNode.parent?.addChildNode(circleNode)
-            
-            currentNode.geometry?.materials.first?.transparency = 0
-            configured = false
-            
-            createBall(node: hitTestResults2.first!.node, plane: planeNode)
+                let tube = SCNTube(innerRadius: planeNode.height/2, outerRadius: planeNode.height/2 + 0.05, height: 0.6)
+                let tubeMaterial = SCNMaterial()
+                tubeMaterial.diffuse.contents = UIImage(named: "tubeWall")
+                tube.materials = [tubeMaterial]
+                let tubeNode = SCNNode(geometry: tube)
+                let shape = SCNPhysicsShape(geometry: tube, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron])
+                
+                tubeNode.physicsBody = SCNPhysicsBody(type: .static, shape: shape)
+                tubeNode.position = SCNVector3(Float((currentNode.position.x)), Float((currentNode.position.y)+0.25), Float((currentNode.position.z)))
+                currentNode.parent?.addChildNode(tubeNode)
+                
+                let circle = SCNCylinder(radius: planeNode.height/2 , height: 0.0)
+                let circleMaterial = SCNMaterial()
+                circleMaterial.diffuse.contents = UIImage(named: "poolFloor")
+                circle.materials = [circleMaterial]
+                let circleNode = SCNNode(geometry: circle)
+                circleNode.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+                circleNode.position = SCNVector3(Float((currentNode.position.x)), Float(tubeNode.position.y-0.3), Float((currentNode.position.z)))
+                currentNode.parent?.addChildNode(circleNode)
+                
+                let tube2 = SCNTube(innerRadius: planeNode.height*2, outerRadius: planeNode.height*2.1 + 0.05, height: 4.0)
+                let tubeNode2 = SCNNode(geometry: tube2)
+                let shape2 = SCNPhysicsShape(geometry: tube2, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron])
+                
+                tubeNode2.physicsBody = SCNPhysicsBody(type: .static, shape: shape2)
+                tubeNode2.geometry?.materials.first?.transparency = 0
+                tubeNode2.position = SCNVector3(Float((currentNode.position.x)), Float((currentNode.position.y)+0.26), Float((currentNode.position.z)))
+                currentNode.parent?.addChildNode(tubeNode2)
+                
+                let circle2 = SCNCylinder(radius: planeNode.height*2 , height: 0.0)
+                let circleNode2 = SCNNode(geometry: circle2)
+                circleNode2.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+                circleNode2.position = SCNVector3(Float((currentNode.position.x)), Float(tubeNode2.position.y-0.3), Float((currentNode.position.z)))
+                currentNode.parent?.addChildNode(circleNode2)
+                
+                currentNode.geometry?.materials.first?.transparency = 0
+                configured = false
+                
+                createBall(node: currentNode, plane: planeNode)
+            }
         }else{
         
         }
     }
-//    let a: ARFrame
     
     @objc func handleLongPress(gestureReconizer: UILongPressGestureRecognizer) {
         if gestureReconizer.state != UIGestureRecognizer.State.ended {
@@ -198,10 +214,10 @@ class ViewController: UIViewController {
 
 extension ViewController: UIGestureRecognizerDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
+
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
+
     }
 }
 
@@ -256,6 +272,7 @@ extension ViewController: ARSCNViewDelegate {
         if plane.height > 1.5 && plane.width > 1.5{
             let configuration = ARWorldTrackingConfiguration()
             sceneView.session.run(configuration)
+            return
         }
         planeNode.position = SCNVector3(x, y, z)
     }
