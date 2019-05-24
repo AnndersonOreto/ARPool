@@ -288,7 +288,7 @@ class ViewController: UIViewController {
         }
         
         for _ in 0...9{
-            let ball = SCNBox(width: 0.2, height: 0.2, length: 0.2, chamferRadius: 0)
+            let ball = SCNBox(width: 0.15, height: 0.15, length: 0.15, chamferRadius: 0.05)
             let ballMaterial = SCNMaterial()
             let number = Int.random(in: 0...3)
             
