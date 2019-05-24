@@ -19,6 +19,7 @@ class ViewController: UIViewController {
     var touched = false
     var teste1: SCNNode = SCNNode()
     var timer: Timer = Timer()
+    var goal: SCNNode = SCNNode()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -134,6 +135,19 @@ class ViewController: UIViewController {
                 tubeNode2.position = SCNVector3(Float((currentNode.position.x)), Float((currentNode.position.y)+0.26), Float((currentNode.position.z)))
                 currentNode.parent?.addChildNode(tubeNode2)
                 
+                let tube3 = SCNTube(innerRadius: 0.5, outerRadius: 0.5, height: 1.0)
+                let tubeNode3 = SCNNode(geometry: tube3)
+                let shape3 = SCNPhysicsShape(geometry: tube3, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron])
+                
+                tube3.materials.first?.diffuse.contents = UIColor.blue
+                
+                tubeNode3.physicsBody = SCNPhysicsBody(type: .static, shape: shape3)
+                tubeNode3.runAction(SCNAction.sequence([SCNAction.fadeOpacity(to: 0.4, duration: 1.0), SCNAction.fadeOpacity(to: 0.8, duration: 1.0)]))
+                tubeNode3.geometry?.materials.first?.transparency = 0.5
+                tubeNode3.position = SCNVector3(Float((currentNode.position.x)), Float((currentNode.position.y)+0.26), Float((currentNode.position.z)))
+                currentNode.parent?.addChildNode(tubeNode3)
+                goal = tubeNode3
+                
                 let circle2 = SCNCylinder(radius: planeNode.height*3 , height: 0.0)
                 let circleNode2 = SCNNode(geometry: circle2)
                 circleNode2.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
@@ -209,12 +223,16 @@ class ViewController: UIViewController {
 
                 teste1.simdWorldTransform = simd_float4x4(cameraTransform)
                 teste1.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+                if let a = goal.geometry as? SCNTube {
+                    if (teste1.position.x < (goal.position.x + Float(a.height/2))) && (teste1.position.x > (goal.position.x - Float(a.height/2))) && (teste1.position.z < (goal.position.z + Float(a.height/2))) && (teste1.position.z > (goal.position.z - Float(a.height/2))) {
+                        teste1.removeFromParentNode()
+                    }
+                }
                 teste1 = SCNNode()
                 //node.simdWorldTransform = cameraTransform
                 touched = false
                 timer.invalidate()
                 timer = Timer()
-                print("teste1")
             }
         }
     }
