@@ -20,6 +20,8 @@ class ViewController: UIViewController {
     var teste1: SCNNode = SCNNode()
     var timer: Timer = Timer()
     var goal: SCNNode = SCNNode()
+    var game = 9
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -142,7 +144,7 @@ class ViewController: UIViewController {
                 tube3.materials.first?.diffuse.contents = UIColor.blue
                 
                 tubeNode3.physicsBody = SCNPhysicsBody(type: .static, shape: shape3)
-                tubeNode3.runAction(SCNAction.sequence([SCNAction.fadeOpacity(to: 0.4, duration: 1.0), SCNAction.fadeOpacity(to: 0.8, duration: 1.0)]))
+                tubeNode3.runAction(SCNAction.sequence([SCNAction.fadeOpacity(to: 0.2, duration: 10.0), SCNAction.fadeOpacity(to: 0.8, duration: 10.0)]))
                 tubeNode3.geometry?.materials.first?.transparency = 0.5
                 tubeNode3.position = SCNVector3(Float((currentNode.position.x)+2.0), Float((currentNode.position.y)+0.26), Float((currentNode.position.z)))
                 currentNode.parent?.addChildNode(tubeNode3)
@@ -226,6 +228,10 @@ class ViewController: UIViewController {
                 if let a = goal.geometry as? SCNTube {
                     if (teste1.position.x < (goal.position.x + Float(a.height/2))) && (teste1.position.x > (goal.position.x - Float(a.height/2))) && (teste1.position.z < (goal.position.z + Float(a.height/2))) && (teste1.position.z > (goal.position.z - Float(a.height/2))) {
                         teste1.removeFromParentNode()
+                        game -= 1
+                        if game <= 0 {
+                            currentNode.parent?.removeFromParentNode()
+                        }
                     }
                 }
                 teste1 = SCNNode()
@@ -265,17 +271,15 @@ class ViewController: UIViewController {
         for _ in 0..<2000{
             let ball = SCNSphere(radius: 0.05)
             let ballMaterial = SCNMaterial()
-            let number = Int.random(in: 0...3)
+            let number = Int.random(in: 0...2)
             
             switch number{
             case 0:
-                ballMaterial.diffuse.contents = UIColor.red
+                ballMaterial.diffuse.contents = UIColor(red: 0.97, green: 0.94, blue: 0.53, alpha: 1).cgColor
             case 1:
-                ballMaterial.diffuse.contents = UIColor.blue
+                ballMaterial.diffuse.contents = UIColor(red: 0.16, green: 0.77, blue: 0.81, alpha: 1).cgColor
             case 2:
-                ballMaterial.diffuse.contents = UIColor.yellow
-            case 3:
-                ballMaterial.diffuse.contents = UIColor.green
+                ballMaterial.diffuse.contents = UIColor(red: 1, green: 0.42, blue: 0.42, alpha: 1).cgColor
             default:
                 break
             }
@@ -287,29 +291,55 @@ class ViewController: UIViewController {
             currentNode.parent?.addChildNode(ballNode)
         }
         
-        for _ in 0...9{
-            let ball = SCNBox(width: 0.15, height: 0.15, length: 0.15, chamferRadius: 0.05)
-            let ballMaterial = SCNMaterial()
-            let number = Int.random(in: 0...3)
+        for i in 0...9{
+            let cube = SCNBox(width: 0.15, height: 0.15, length: 0.15, chamferRadius: 0.05)
+            let cubeMaterial = SCNMaterial()
+            let number = Int.random(in: 0...2)
             
-            switch number{
+            
+            switch number {
             case 0:
-                ballMaterial.diffuse.contents = UIColor.red
+                cubeMaterial.diffuse.contents = UIColor(red: 0.97, green: 0.94, blue: 0.53, alpha: 1).cgColor
             case 1:
-                ballMaterial.diffuse.contents = UIColor.blue
+                cubeMaterial.diffuse.contents = UIColor(red: 0.16, green: 0.77, blue: 0.81, alpha: 1).cgColor
             case 2:
-                ballMaterial.diffuse.contents = UIColor.yellow
-            case 3:
-                ballMaterial.diffuse.contents = UIColor.green
+                cubeMaterial.diffuse.contents = UIColor(red: 1, green: 0.42, blue: 0.42, alpha: 1).cgColor
             default:
                 break
             }
             
-            ball.materials = [ballMaterial]
-            let ballNode = SCNNode(geometry: ball)
-            ballNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
-            ballNode.position = SCNVector3(x: Float.random(in: (node.position.x - 0.75)...(node.position.x + 0.75)), y: Float.random(in: (node.position.y + 2.5)...(node.position.y + 3.0)), z: Float.random(in: (node.position.z - 0.75)...(node.position.z + 0.75)))
-            currentNode.parent?.addChildNode(ballNode)
+            
+            switch i{
+            case 0:
+                cubeMaterial.diffuse.contents = UIImage(named: "Numero1")
+            case 1:
+                cubeMaterial.diffuse.contents = UIImage(named: "Numero2")
+            case 2:
+                cubeMaterial.diffuse.contents = UIImage(named: "Numero3")
+            case 3:
+                cubeMaterial.diffuse.contents = UIImage(named: "Numero4")
+            case 4:
+                cubeMaterial.diffuse.contents = UIImage(named: "Numero5")
+            case 5:
+                cubeMaterial.diffuse.contents = UIImage(named: "Numero6")
+            case 6:
+                cubeMaterial.diffuse.contents = UIImage(named: "Numero7")
+            case 7:
+                cubeMaterial.diffuse.contents = UIImage(named: "Numero8")
+            case 8:
+                cubeMaterial.diffuse.contents = UIImage(named: "Numero9")
+            case 9:
+                cubeMaterial.diffuse.contents = UIImage(named: "Numero10")
+                
+            default:
+                break
+            }
+            
+            cube.materials = [cubeMaterial]
+            let cubeNode = SCNNode(geometry: cube)
+            cubeNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+            cubeNode.position = SCNVector3(x: Float.random(in: (node.position.x - 0.75)...(node.position.x + 0.75)), y: Float.random(in: (node.position.y + 2.5)...(node.position.y + 3.0)), z: Float.random(in: (node.position.z - 0.75)...(node.position.z + 0.75)))
+            currentNode.parent?.addChildNode(cubeNode)
         }
     }
 }
