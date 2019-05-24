@@ -374,6 +374,7 @@ extension ViewController: ARSCNViewDelegate {
         if plane.height > 1.5 && plane.width > 1.5{
             let configuration = ARWorldTrackingConfiguration()
             sceneView.session.run(configuration)
+            sceneView.debugOptions = []
             return
         }
         planeNode.position = SCNVector3(x, y, z)
