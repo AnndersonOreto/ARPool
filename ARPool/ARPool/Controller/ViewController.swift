@@ -144,7 +144,7 @@ class ViewController: UIViewController {
                 tubeNode3.physicsBody = SCNPhysicsBody(type: .static, shape: shape3)
                 tubeNode3.runAction(SCNAction.sequence([SCNAction.fadeOpacity(to: 0.4, duration: 1.0), SCNAction.fadeOpacity(to: 0.8, duration: 1.0)]))
                 tubeNode3.geometry?.materials.first?.transparency = 0.5
-                tubeNode3.position = SCNVector3(Float((currentNode.position.x)), Float((currentNode.position.y)+0.26), Float((currentNode.position.z)))
+                tubeNode3.position = SCNVector3(Float((currentNode.position.x)+2.0), Float((currentNode.position.y)+0.26), Float((currentNode.position.z)))
                 currentNode.parent?.addChildNode(tubeNode3)
                 goal = tubeNode3
                 
