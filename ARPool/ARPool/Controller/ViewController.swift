@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     var configured = true
     var touched = false
     var teste1: SCNNode = SCNNode()
+    var timer: Timer = Timer()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -120,7 +121,7 @@ class ViewController: UIViewController {
                 circleNode.position = SCNVector3(Float((currentNode.position.x)), Float(tubeNode.position.y-0.3), Float((currentNode.position.z)))
                 currentNode.parent?.addChildNode(circleNode)
                 
-                let tube2 = SCNTube(innerRadius: planeNode.height*2, outerRadius: planeNode.height*2.1 + 0.05, height: 4.0)
+                let tube2 = SCNTube(innerRadius: planeNode.height*3, outerRadius: planeNode.height*3.1 + 0.05, height: 4.0)
                 let tubeNode2 = SCNNode(geometry: tube2)
                 let shape2 = SCNPhysicsShape(geometry: tube2, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron])
                 
@@ -129,13 +130,14 @@ class ViewController: UIViewController {
                 tube2.materials = [tube2Material]
                 
                 tubeNode2.physicsBody = SCNPhysicsBody(type: .static, shape: shape2)
-                tubeNode2.geometry?.materials.first?.transparency = 1
+                tubeNode2.geometry?.materials.first?.transparency = 0
                 tubeNode2.position = SCNVector3(Float((currentNode.position.x)), Float((currentNode.position.y)+0.26), Float((currentNode.position.z)))
                 currentNode.parent?.addChildNode(tubeNode2)
                 
-                let circle2 = SCNCylinder(radius: planeNode.height*2 , height: 0.0)
+                let circle2 = SCNCylinder(radius: planeNode.height*3 , height: 0.0)
                 let circleNode2 = SCNNode(geometry: circle2)
                 circleNode2.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+                circleNode2.geometry?.materials.first?.transparency = 0
                 circleNode2.position = SCNVector3(Float((currentNode.position.x)), Float(tubeNode2.position.y-0.3), Float((currentNode.position.z)))
                 currentNode.parent?.addChildNode(circleNode2)
                 
@@ -149,25 +151,78 @@ class ViewController: UIViewController {
     }
     
     @objc func handleLongPress(gestureReconizer: UILongPressGestureRecognizer) {
+        var node = SCNNode()
         if gestureReconizer.state != UIGestureRecognizer.State.ended {
             if !touched {
-                movement(gestureRecognizer: gestureReconizer)
+                if let camera = sceneView.session.currentFrame?.camera {
+                    var cameraTransform = camera.transform
+                    let cameraDirection = SCNVector3(cameraTransform.columns.3.x, cameraTransform.columns.3.y,cameraTransform.columns.3.z)
+                    
+//                    let powX = pow(cameraDirection.x,2)
+//                    let powY = pow(cameraDirection.y,2)
+//                    let powZ = pow(cameraDirection.z,2)
+//
+//
+//                    let v = sqrt(powX+powY+powZ)
+//                    let ux = cameraDirection.x / v
+//                    let uy = cameraDirection.y / v
+//                    let uz = cameraDirection.z / v
+//
+//                    cameraTransform.columns.3.x = ux
+//                    cameraTransform.columns.3.y = uy
+//                    cameraTransform.columns.3.z = uz
+                    let tapLocation = gestureReconizer.location(in: sceneView)
+                    let hitTestResults2 = sceneView.hitTest(tapLocation, options: nil)
+                    
+                    if let sphereNode = hitTestResults2.first?.node{
+                        // A GENTE NEM USA ESSE 'a'
+                        if (sphereNode.geometry as? SCNBox) != nil {
+                            //                    sphereNode.runAction(SCNAction.sequence([SCNAction.move(to: SCNVector3(cameraTransform.columns.3.x, cameraTransform.columns.3.y, cameraTransform.columns.3.z), duration: 1.0)]))
+                            //                    sphereNode.simdWorldTransform = cameraTransform//position = SCNVector3(Float(ux), Float(uy), Float(uz))
+                            teste1 = sphereNode
+                            teste1.physicsBody = SCNPhysicsBody(type: .static, shape: nil)
+                            //node = sphereNode
+                            touched = true
+                            timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(movement), userInfo: nil, repeats: true)
+                        }
+                    }
+                }
             }
         }
         else {
             if let camera = sceneView.session.currentFrame?.camera {
-                var cameraTransform = camera.transform
-                teste1.simdWorldTransform = cameraTransform
-                touched = true
+                var cameraTransform = SCNMatrix4(camera.transform)
+                let cameraDirection = SCNVector3(-1 * cameraTransform.m31, -1 * cameraTransform.m32,-1 * cameraTransform.m33)
+                let powX = pow(cameraDirection.x,2)
+                let powY = pow(cameraDirection.y,2)
+                let powZ = pow(cameraDirection.z,2)
+                
+                
+                let v = sqrt(powX+powY+powZ)
+                let ux = cameraDirection.x / v
+                let uy = cameraDirection.y / v
+                let uz = cameraDirection.z / v
+                
+                cameraTransform.m31 = ux
+                cameraTransform.m32 = uy
+                cameraTransform.m33 = uz
+
+                teste1.simdWorldTransform = simd_float4x4(cameraTransform)
+                teste1.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+                teste1 = SCNNode()
+                //node.simdWorldTransform = cameraTransform
+                touched = false
+                timer.invalidate()
+                timer = Timer()
+                print("teste1")
             }
         }
     }
     
-    @objc func movement(gestureRecognizer: UILongPressGestureRecognizer) {
+    @objc func movement() {
         if let camera = sceneView.session.currentFrame?.camera {
-            var cameraTransform = camera.transform
-            let cameraDirection = SCNVector3(cameraTransform.columns.3.x, cameraTransform.columns.3.y,cameraTransform.columns.3.z)
-            
+            var cameraTransform = SCNMatrix4(camera.transform)
+            let cameraDirection = SCNVector3(-1 * cameraTransform.m31, -1 * cameraTransform.m32,-1 * cameraTransform.m33)
             let powX = pow(cameraDirection.x,2)
             let powY = pow(cameraDirection.y,2)
             let powZ = pow(cameraDirection.z,2)
@@ -178,21 +233,12 @@ class ViewController: UIViewController {
             let uy = cameraDirection.y / v
             let uz = cameraDirection.z / v
             
-            cameraTransform.columns.3.x = ux
-            cameraTransform.columns.3.y = uy
-            cameraTransform.columns.3.z = uz
-            let tapLocation = gestureRecognizer.location(in: sceneView)
-            let hitTestResults2 = sceneView.hitTest(tapLocation, options: nil)
+            cameraTransform.m31 = ux
+            cameraTransform.m32 = uy
+            cameraTransform.m33 = uz
             
-            if let sphereNode = hitTestResults2.first?.node{
-                // A GENTE NEM USA ESSE 'a'
-                if let a = sphereNode.geometry as? SCNSphere {
-                    //                    sphereNode.runAction(SCNAction.sequence([SCNAction.move(to: SCNVector3(cameraTransform.columns.3.x, cameraTransform.columns.3.y, cameraTransform.columns.3.z), duration: 1.0)]))
-                    //                    sphereNode.simdWorldTransform = cameraTransform//position = SCNVector3(Float(ux), Float(uy), Float(uz))
-                    teste1 = sphereNode
-                    touched = false
-                }
-            }
+            teste1.simdWorldTransform = simd_float4x4(cameraTransform)
+            
         }
     }
     
@@ -200,6 +246,31 @@ class ViewController: UIViewController {
     func createBall(node: SCNNode, plane: SCNPlane) {
         for _ in 0..<2000{
             let ball = SCNSphere(radius: 0.05)
+            let ballMaterial = SCNMaterial()
+            let number = Int.random(in: 0...3)
+            
+            switch number{
+            case 0:
+                ballMaterial.diffuse.contents = UIColor.red
+            case 1:
+                ballMaterial.diffuse.contents = UIColor.blue
+            case 2:
+                ballMaterial.diffuse.contents = UIColor.yellow
+            case 3:
+                ballMaterial.diffuse.contents = UIColor.green
+            default:
+                break
+            }
+            
+            ball.materials = [ballMaterial]
+            let ballNode = SCNNode(geometry: ball)
+            ballNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+            ballNode.position = SCNVector3(x: Float.random(in: (node.position.x - 0.75)...(node.position.x + 0.75)), y: Float.random(in: (node.position.y + 2.5)...(node.position.y + 3.0)), z: Float.random(in: (node.position.z - 0.75)...(node.position.z + 0.75)))
+            currentNode.parent?.addChildNode(ballNode)
+        }
+        
+        for _ in 0...9{
+            let ball = SCNBox(width: 0.2, height: 0.2, length: 0.2, chamferRadius: 0)
             let ballMaterial = SCNMaterial()
             let number = Int.random(in: 0...3)
             
