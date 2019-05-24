@@ -339,8 +339,9 @@ extension ViewController: ARSCNViewDelegate {
             let width = CGFloat(planeAnchor.extent.x)
             let height = CGFloat(planeAnchor.extent.z)
             let plane = SCNPlane(width: width, height: height)
-            
-            plane.materials.first?.diffuse.contents = UIColor.lightGray
+            let planeMaterial = SCNMaterial()
+            planeMaterial.diffuse.contents = UIImage(named: "grid")
+            plane.materials = [planeMaterial]
             
             let planeNode = SCNNode(geometry: plane)
             
