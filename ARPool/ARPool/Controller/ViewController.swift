@@ -260,8 +260,12 @@ class ViewController: UIViewController {
             cameraTransform.m31 = ux
             cameraTransform.m32 = uy
             cameraTransform.m33 = uz
-            
+
+//            teste1.runAction(SCNAction.sequence([SCNAction.move(to: SCNVector3(ux, uy, uz), duration: 0.5)]))
             teste1.simdWorldTransform = simd_float4x4(cameraTransform)
+            let position = teste1.simdWorldTransform.position()
+            teste1.runAction(SCNAction.move(to: position, duration: 0.5))
+
             
         }
     }
@@ -299,11 +303,11 @@ class ViewController: UIViewController {
             
             switch number {
             case 0:
-                cubeMaterial.diffuse.contents = UIColor(red: 0.97, green: 0.94, blue: 0.53, alpha: 1).cgColor
+                cubeMaterial.diffuse.contents = UIColor(red: 1, green: 0.38, blue: 0.38, alpha: 1).cgColor
             case 1:
-                cubeMaterial.diffuse.contents = UIColor(red: 0.16, green: 0.77, blue: 0.81, alpha: 1).cgColor
+                cubeMaterial.diffuse.contents = UIColor(red: 0, green: 0.82, blue: 0.87, alpha: 1).cgColor
             case 2:
-                cubeMaterial.diffuse.contents = UIColor(red: 1, green: 0.42, blue: 0.42, alpha: 1).cgColor
+                cubeMaterial.diffuse.contents = UIColor(red: 0.91, green: 0.86, blue: 0.31, alpha: 1).cgColor
             default:
                 break
             }
@@ -417,5 +421,11 @@ extension float4x4 {
     var translation: float3 {
         let translation = self.columns.3
         return float3(translation.x, translation.y, translation.z)
+    }
+}
+
+extension matrix_float4x4 {
+    func position() -> SCNVector3 {
+        return SCNVector3(columns.3.x, columns.3.y, columns.3.z)
     }
 }
