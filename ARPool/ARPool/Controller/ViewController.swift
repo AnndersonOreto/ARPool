@@ -30,7 +30,6 @@ class ViewController: UIViewController {
         sceneView.showsStatistics = true
         sceneView.autoenablesDefaultLighting = true
         sceneView.automaticallyUpdatesLighting = true
-        
         let scene = SCNScene()
         sceneView.scene = scene
     }
