@@ -13,6 +13,11 @@
 		26B5F72B2294664200A7E18F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26B5F7292294664200A7E18F /* Main.storyboard */; };
 		26B5F72D2294664300A7E18F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26B5F72C2294664300A7E18F /* Assets.xcassets */; };
 		26B5F7302294664300A7E18F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26B5F72E2294664300A7E18F /* LaunchScreen.storyboard */; };
+		AB31FC4722A0707D00FFAF6F /* StartScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB31FC4622A0707D00FFAF6F /* StartScreenViewController.swift */; };
+		AB31FC4A22A073DE00FFAF6F /* UiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB31FC4922A073DE00FFAF6F /* UiView.swift */; };
+		AB31FC4E22A0761000FFAF6F /* Capriola-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AB31FC4D22A0760C00FFAF6F /* Capriola-Regular.ttf */; };
+		AB31FC5022A19B6100FFAF6F /* ConfigureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB31FC4F22A19B6100FFAF6F /* ConfigureViewController.swift */; };
+		AB31FC5222A19BDE00FFAF6F /* ColorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB31FC5122A19BDE00FFAF6F /* ColorModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +29,12 @@
 		26B5F72C2294664300A7E18F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		26B5F72F2294664300A7E18F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		26B5F7312294664300A7E18F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AB31FC4622A0707D00FFAF6F /* StartScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenViewController.swift; sourceTree = "<group>"; };
+		AB31FC4922A073DE00FFAF6F /* UiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiView.swift; sourceTree = "<group>"; };
+		AB31FC4C22A0760900FFAF6F /* Capriola-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Capriola-Regular.ttf"; path = "../../../../Capriola-Regular.ttf"; sourceTree = "<group>"; };
+		AB31FC4D22A0760C00FFAF6F /* Capriola-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Capriola-Regular.ttf"; sourceTree = "<group>"; };
+		AB31FC4F22A19B6100FFAF6F /* ConfigureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigureViewController.swift; sourceTree = "<group>"; };
+		AB31FC5122A19BDE00FFAF6F /* ColorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ColorModel.swift; path = ARPool/Controller/ColorModel.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +53,7 @@
 			children = (
 				26B5F7222294664200A7E18F /* ARPool */,
 				26B5F7212294664200A7E18F /* Products */,
+				AB31FC4C22A0760900FFAF6F /* Capriola-Regular.ttf */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,6 +68,8 @@
 		26B5F7222294664200A7E18F /* ARPool */ = {
 			isa = PBXGroup;
 			children = (
+				AB31FC4B22A0750800FFAF6F /* Fonts */,
+				AB31FC4822A073C500FFAF6F /* Extensions */,
 				26B5F73A2294667800A7E18F /* Support */,
 				26B5F7392294666900A7E18F /* Controller */,
 				26B5F7382294665F00A7E18F /* View */,
@@ -69,6 +83,7 @@
 		26B5F7372294665A00A7E18F /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				AB31FC5122A19BDE00FFAF6F /* ColorModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -86,6 +101,8 @@
 			isa = PBXGroup;
 			children = (
 				26B5F7272294664200A7E18F /* ViewController.swift */,
+				AB31FC4622A0707D00FFAF6F /* StartScreenViewController.swift */,
+				AB31FC4F22A19B6100FFAF6F /* ConfigureViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -97,6 +114,22 @@
 				26B5F7232294664200A7E18F /* AppDelegate.swift */,
 			);
 			path = Support;
+			sourceTree = "<group>";
+		};
+		AB31FC4822A073C500FFAF6F /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				AB31FC4922A073DE00FFAF6F /* UiView.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		AB31FC4B22A0750800FFAF6F /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				AB31FC4D22A0760C00FFAF6F /* Capriola-Regular.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,6 +193,7 @@
 				26B5F7262294664200A7E18F /* art.scnassets in Resources */,
 				26B5F7302294664300A7E18F /* LaunchScreen.storyboard in Resources */,
 				26B5F72D2294664300A7E18F /* Assets.xcassets in Resources */,
+				AB31FC4E22A0761000FFAF6F /* Capriola-Regular.ttf in Resources */,
 				26B5F72B2294664200A7E18F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,8 +205,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB31FC4A22A073DE00FFAF6F /* UiView.swift in Sources */,
+				AB31FC5022A19B6100FFAF6F /* ConfigureViewController.swift in Sources */,
+				AB31FC4722A0707D00FFAF6F /* StartScreenViewController.swift in Sources */,
 				26B5F7282294664200A7E18F /* ViewController.swift in Sources */,
 				26B5F7242294664200A7E18F /* AppDelegate.swift in Sources */,
+				AB31FC5222A19BDE00FFAF6F /* ColorModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
