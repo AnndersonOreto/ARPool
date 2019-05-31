@@ -9,6 +9,7 @@
 import UIKit
 import SceneKit
 import ARKit
+import SpriteKit
 
 class ViewController: UIViewController {
     
@@ -21,6 +22,7 @@ class ViewController: UIViewController {
     var timer: Timer = Timer()
     var goal: SCNNode = SCNNode()
     var game = 9
+    var hud: SKScene!
 
     
     override func viewDidLoad() {
@@ -33,6 +35,20 @@ class ViewController: UIViewController {
         
         let scene = SCNScene()
         sceneView.scene = scene
+        hud = SKScene(size: sceneView.frame.size)
+        let label1 = SKLabelNode(text: "1")
+        label1.fontSize = 60
+        label1.fontColor = UIColor.white
+        label1.position = CGPoint(x: hud.size.width/2, y: hud.size.height-128)
+        hud.addChild(label1)
+        
+        let label2 = SKLabelNode(text: "Tap the grid when it suits a good size")
+        label2.fontSize = 20
+        label2.fontColor = UIColor.white
+        label2.position = CGPoint(x: hud.size.width/2, y: 32)
+        hud.addChild(label2)
+        
+        sceneView.overlaySKScene = hud
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -79,20 +95,20 @@ class ViewController: UIViewController {
     }
     
     @objc func panGesture( _ gesture: UIPanGestureRecognizer){
-        //        gesture.minimumNumberOfTouches = 1
-        //
-        //        let results = self.sceneView.hitTest(gesture.location(in: gesture.view), types: ARHitTestResult.ResultType.featurePoint)
-        //
-        //        guard let result : ARHitTestResult = results.first else {return}
-        //
-        //        let hits = self.sceneView.hitTest(gesture.location(in: gesture.view), options: nil)
-        //
-        //        if let tappedNode = hits.first?.node{
-        //            if tappedNode.geometry is SCNSphere {
-        //                let position = SCNVector3Make(result.worldTransform.columns.3.x, result.worldTransform.columns.3.y, result.worldTransform.columns.3.z)
-        //                tappedNode.position = position
-        //            }
-        //        }
+                gesture.minimumNumberOfTouches = 1
+        
+                let results = self.sceneView.hitTest(gesture.location(in: gesture.view), types: ARHitTestResult.ResultType.featurePoint)
+        
+                guard let result : ARHitTestResult = results.first else {return}
+        
+                let hits = self.sceneView.hitTest(gesture.location(in: gesture.view), options: nil)
+        
+                if let tappedNode = hits.first?.node{
+                    if tappedNode.geometry is SCNSphere {
+                        let cameraDirection = SCNVector3(0, 5, 0)
+                        tappedNode.physicsBody?.applyForce(cameraDirection, asImpulse: true)
+                    }
+                } 
         
     }
     
@@ -243,7 +259,7 @@ class ViewController: UIViewController {
         }
     }
     
-    @objc func movement() {
+    @objc func movement(a: SCNNode) {
         if let camera = sceneView.session.currentFrame?.camera {
             var cameraTransform = SCNMatrix4(camera.transform)
             let cameraDirection = SCNVector3(-1 * cameraTransform.m31, -1 * cameraTransform.m32,-1 * cameraTransform.m33)
@@ -262,9 +278,11 @@ class ViewController: UIViewController {
             cameraTransform.m33 = uz
 
 //            teste1.runAction(SCNAction.sequence([SCNAction.move(to: SCNVector3(ux, uy, uz), duration: 0.5)]))
-            teste1.simdWorldTransform = simd_float4x4(cameraTransform)
-            let position = teste1.simdWorldTransform.position()
-            teste1.runAction(SCNAction.move(to: position, duration: 0.5))
+            SCNView.animate(withDuration: 0.5, animations: {
+                self.teste1.simdWorldTransform = simd_float4x4(cameraTransform)
+            })
+//            var position = teste1.simdWorldTransform.position()
+//            teste1.runAction(SCNAction.move(to: position, duration: 0.5))
 
             
         }
