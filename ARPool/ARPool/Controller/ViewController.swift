@@ -47,6 +47,7 @@ class ViewController: UIViewController {
         label2.position = CGPoint(x: hud.size.width/2, y: 32)
         hud.addChild(label2)
         
+        defineColorGame()
         sceneView.overlaySKScene = hud
     }
     
@@ -296,11 +297,11 @@ class ViewController: UIViewController {
             
             switch number{
             case 0:
-                ballMaterial.diffuse.contents = UIColor(red: 0.97, green: 0.94, blue: 0.53, alpha: 1).cgColor
+                ballMaterial.diffuse.contents = colorGameYellow.cgColor
             case 1:
-                ballMaterial.diffuse.contents = UIColor(red: 0.16, green: 0.77, blue: 0.81, alpha: 1).cgColor
+                ballMaterial.diffuse.contents = colorGameBlue.cgColor
             case 2:
-                ballMaterial.diffuse.contents = UIColor(red: 1, green: 0.42, blue: 0.42, alpha: 1).cgColor
+                ballMaterial.diffuse.contents = colorGameRed.cgColor
             default:
                 break
             }
